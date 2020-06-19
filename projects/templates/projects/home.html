@@ -2,4 +2,12 @@
 
 {% block body %}
   <h1>Home</h1>
+  {% for project in projects %}
+    <div class="{{project.status.cardClass.cardClass}}">
+      <div class="card-body">
+          {{project.name}}
+        <a href="#" class="float-right btn btn-primary">More</a>
+      </div>
+    </div>
+  {% endfor %}
 {% endblock %}

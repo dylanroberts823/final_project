@@ -1,21 +1,25 @@
 from django.db import models
 from django.conf import settings
 
+class CardClass(models.Model):
+    name = models.CharField(max_length=64)
+    cardClass = models.CharField(max_length=64)
+
+    def __str__(self):
+        return f"{self.name}"
+
+class Status(models.Model):
+    status = models.CharField(max_length=64)
+    cardClass = models.ForeignKey('CardClass', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.status}"
+
 # Create your models here.
 class Project(models.Model):
     name = models.CharField(max_length=64)
     manager = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)
+    status = models.ForeignKey('Status', on_delete=models.PROTECT)
 
-    PLANNING = 'PL'
-    QUEUED = 'QD'
-    IN_PROGRESS = 'IP'
-    COMPLETED = 'CO'
-    ABANDONED = 'AB'
-    STATUS_CHOICES = [
-        (PLANNING, 'Planning'),
-        (QUEUED, 'QD'),
-        (IN_PROGRESS, 'In Progress'),
-        (COMPLETED, 'Completed'),
-        (ABANDONED, 'Abandoned'),
-    ]
-    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=PLANNING,)
+    def __str__(self):
+        return f"{self.name} by {self.manager}"

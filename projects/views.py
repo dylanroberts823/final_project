@@ -3,11 +3,17 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
+from users.models import Project
+
 # Create your views here.
 def home_view(request):
     if not request.user.is_authenticated:
         return render(request, "projects/home.html", {"base": "users/base.html"})
-    return render(request, "projects/home.html", {"base": "projects/base.html"})
+    context = {
+        "projects": Project.objects.all(),
+        "base":"projects/base.html",
+    }
+    return render(request, "projects/home.html", context)
 
 def create_view(request):
     if not request.user.is_authenticated:
