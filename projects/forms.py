@@ -1,6 +1,8 @@
-from django import forms
+from django.forms import ModelForm
+from users.models import Project
 
-class CreateForm(forms.Form):
-    project_name = forms.CharField(label='Project Name', max_length = 100, help_text='100 characters max', error_messages={'required': 'Please enter your project name'})
-    project_desccription = forms.CharField(label='Project Description', widget = forms.Textarea)
-    
+
+class CreateProjectForm(ModelForm):
+    class Meta:
+        model = Project
+        fields = ['name', 'status']

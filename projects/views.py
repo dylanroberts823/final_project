@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from users.models import Project
-from .forms import CreateForm
+from .forms import CreateProjectForm
 
 # Create your views here.
 def home_view(request):
@@ -21,12 +21,12 @@ def create_view(request):
         return render(request, "users/login.html", {"message": None})
     if request.method == 'POST':
         #Create a form instance and populate it with data from the request:
-        form = CreateForm(request.POST)
+        form = CreateProjectForm(request.POST)
         #Check whether it's valid
         if form.is_valid():
             return redirect('projects:home')
     else:
-        form = CreateForm()
+        form = CreateProjectForm()
 
     return render(request, "projects/create.html", {'form': form})
 
