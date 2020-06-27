@@ -5,4 +5,4 @@ from users.models import Project
 class CreateProjectForm(ModelForm):
     class Meta:
         model = Project
-        fields = ['name', 'status']
+        fields = ['name', 'description', 'status', 'contributors']
