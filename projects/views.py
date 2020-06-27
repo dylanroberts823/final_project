@@ -24,6 +24,19 @@ def create_view(request):
         form = CreateProjectForm(request.POST)
         #Check whether it's valid
         if form.is_valid():
+            #Get the form data
+            name = form.cleaned_data['name']
+            manager = request.user
+            status = form.cleaned_data['status']
+            contributors = form.cleaned_data['contributors']
+            description = form.cleaned_data['description']
+
+            #Create the project
+            project = Project.objects.create(name = name, manager = manager, status = status, description = description)
+            for contributor in contributors:
+                project.contributors.add(contributor)
+
+            #Redirect to home
             return redirect('projects:home')
     else:
         form = CreateProjectForm()

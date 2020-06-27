@@ -21,7 +21,7 @@ class Project(models.Model):
     name = models.CharField(max_length=64)
     manager = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='manager')
     status = models.ForeignKey('Status', on_delete=models.PROTECT,)
-    contributors = models.ManyToManyField(User, related_name='contributor')
+    contributors = models.ManyToManyField(User, related_name='contributor', blank=True)
     description = models.TextField()
 
     def __str__(self):
