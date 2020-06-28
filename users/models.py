@@ -19,6 +19,9 @@ class Status(models.Model):
 class Tag(models.Model):
     tag = models.CharField(max_length=64)
 
+    def __str__(self):
+        return f"{self.tag}"
+
 #Will have to decide how to limit many to many
 # Create your models here.
 class Project(models.Model):

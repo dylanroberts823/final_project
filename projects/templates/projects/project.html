@@ -2,7 +2,10 @@
 {% block body %}
 <div class="{{project.status.cardClass.cardClass}}">
   <div class="card-body">
-      {{project.name}}<br>
+      <h5 class = "card-title"> {{project.name}}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">{{project.status}}</h6>
+      Description: {{project.description}} <br>
+      Tags: {% for tag in project.tags.all %}{{tag}}{% endfor %}<br>
       Role: {{role}}
     <a href="#" class="float-right btn btn-primary">More</a>
   </div>
