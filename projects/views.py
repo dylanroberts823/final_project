@@ -158,6 +158,31 @@ def myrequests_view(request):
 
     context = {
         "sent_requests": Request.objects.filter(sender=request.user),
-        "received_requests": Request.objects.filter(project__manager = user)
+        "received_requests": Request.objects.filter(project__manager = user).filter(status='PD')
     }
     return render(request, "projects/myrequests.html", context)
+
+#If the link to approve a request is clicked
+def approve_view(request, request_id):
+    received_request = Request.objects.get(pk = request_id)
+    if received_request.project.manager == request.user:
+        #Change the status of the user
+        received_request.status = 'AP'
+        received_request.save()
+
+        #Add the sender to the contributors list
+        received_request.project.contributors.add(received_request.sender)
+
+        return redirect('projects:myrequests')
+    else:
+        raise Http401("You need to be a manager to modify the status of a request")
+
+#If the link to deny a request is clicked
+def deny_view(request, request_id):
+    received_request = Request.objects.get(pk = request_id)
+    if received_request.project.manager == request.user:
+        received_request.status = 'DN'
+        received_request.save()
+        return redirect('projects:myrequests')
+    else:
+        raise Http401("You need to be a manager to modify the status of a request")

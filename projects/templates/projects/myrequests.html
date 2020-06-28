@@ -4,6 +4,9 @@
   <h2> Received Requests </h2>
     {% for request in received_requests %}
      {{request}}
+     <a href="{% url 'projects:deny' request.id %}" class="float-right btn btn-primary">Deny</a>
+     <a href="{% url 'projects:approve' request.id %}" class="float-right btn btn-primary">Approve</a>
+     <br>
     {% empty %}
     No Received Requests
     {% endfor %}

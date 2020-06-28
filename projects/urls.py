@@ -12,4 +12,6 @@ urlpatterns = [
     path("manage/<int:project_id>/modify_project", views.modify_project_view, name="modify_project"),
     path("request/<int:project_id>/", views.request_view, name="request"),
     path("myrequests/", views.myrequests_view, name="myrequests"),
+    path("approve/<int:request_id>", views.approve_view, name="approve"),
+    path("deny/<int:request_id>", views.deny_view, name="deny"),
 ]
