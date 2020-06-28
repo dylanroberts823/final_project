@@ -8,8 +8,6 @@ from .forms import CreateProjectForm, SearchForm
 
 # Create your views here.
 def home_view(request):
-    #Define initial projects to be returned
-    projects = Project.objects.all()
 
     #Modify the projects to be returned if it's a post request
     if request.method == "POST":
@@ -22,9 +20,14 @@ def home_view(request):
             tag = Tag.objects.get(tag = tag)
             projects = Project.objects.filter(tags = tag.id)
 
-    #Determine the base
-    if not request.user.is_authenticated: base = "users/base.html"
-    else: base = "projects/base.html"
+    #Determine the base and projects
+    if not request.user.is_authenticated:
+        base = "users/base.html"
+        projects = Project.objects.all()
+    else:
+        user = request.user
+        base = "projects/base.html"
+        projects = Project.objects.exclude(contributors = request.user).exclude(manager = request.user).all()
 
     #Render the page with the appropriate context
     context = {
