@@ -154,6 +154,10 @@ def request_view(request, project_id):
         return render(request, "projects/request.html", context)
 
 def myrequests_view(request):
+    user = request.user
+
     context = {
+        "sent_requests": Request.objects.filter(sender=request.user),
+        "received_requests": Request.objects.filter(project__manager = user)
     }
     return render(request, "projects/myrequests.html", context)

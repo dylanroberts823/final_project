@@ -1,4 +1,16 @@
 {% extends "projects/base.html" %}
 {% block body %}
-<h1>My Requests</h1>
+  <h1>My Requests</h1>
+  <h2> Received Requests </h2>
+    {% for request in received_requests %}
+     {{request}}
+    {% empty %}
+    No Received Requests
+    {% endfor %}
+  <h2> Sent Requests </h2>
+    {% for request in sent_requests %}
+      {{request}}
+    {% empty %}
+      No sent requests
+    {% endfor %}
 {% endblock %}
