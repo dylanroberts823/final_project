@@ -22,6 +22,12 @@ class Tag(models.Model):
     def __str__(self):
         return f"{self.tag}"
 
+class RequestStatus(models.Model):
+    status = models.CharField(max_length=64)
+    cardClass = models.ForeignKey('CardClass', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.status}"
 
 #Will have to decide how to limit many to many
 # Create your models here.
@@ -39,16 +45,7 @@ class Project(models.Model):
 class Request(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='project')
-
-    PENDING = 'PD'
-    APPROVED = 'AP'
-    DENIED = 'DN'
-    STATUS_CHOICES = [
-        (PENDING, 'Pending'),
-        (APPROVED, 'Approved'),
-        (DENIED, 'Denied')
-    ]
-    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=PENDING, )
+    status = models.ForeignKey('RequestStatus', on_delete=models.PROTECT)
     note = models.TextField(max_length = 300)
 
     def __str__(self):

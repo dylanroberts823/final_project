@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from users.models import Project, Tag, Request
+from users.models import Project, Tag, Request, RequestStatus
 from .forms import CreateProjectForm, SearchForm, CreateRequestForm
 
 # Create your views here.
@@ -158,7 +158,7 @@ def myrequests_view(request):
 
     context = {
         "sent_requests": Request.objects.filter(sender=request.user),
-        "received_requests": Request.objects.filter(project__manager = user).filter(status='PD')
+        "received_requests": Request.objects.filter(project__manager = user)
     }
     return render(request, "projects/myrequests.html", context)
 
@@ -167,7 +167,7 @@ def approve_view(request, request_id):
     received_request = Request.objects.get(pk = request_id)
     if received_request.project.manager == request.user:
         #Change the status of the user
-        received_request.status = 'AP'
+        received_request.status = RequestStatus.objects.get(status = 'Approved')
         received_request.save()
 
         #Add the sender to the contributors list
@@ -181,7 +181,7 @@ def approve_view(request, request_id):
 def deny_view(request, request_id):
     received_request = Request.objects.get(pk = request_id)
     if received_request.project.manager == request.user:
-        received_request.status = 'DN'
+        received_request.status = RequestStatus.objects.get(status = 'Denied')
         received_request.save()
         return redirect('projects:myrequests')
     else:

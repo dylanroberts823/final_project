@@ -3,16 +3,26 @@
   <h1>My Requests</h1>
   <h2> Received Requests </h2>
     {% for request in received_requests %}
-     {{request}}
-     <a href="{% url 'projects:deny' request.id %}" class="float-right btn btn-primary">Deny</a>
-     <a href="{% url 'projects:approve' request.id %}" class="float-right btn btn-primary">Approve</a>
-     <br>
+    <div class="{{request.status.cardClass.cardClass}}">
+      <div class="card-body">
+          {{request}}<br>
+          Notes:{{request.note}}
+          <a href="{% url 'projects:deny' request.id %}" class="float-right btn btn-primary">Deny</a>
+          <a href="{% url 'projects:approve' request.id %}" class="float-right btn btn-primary">Approve</a>
+      </div>
+    </div>
     {% empty %}
     No Received Requests
     {% endfor %}
   <h2> Sent Requests </h2>
     {% for request in sent_requests %}
-      {{request}}
+    <div class="{{request.status.cardClass.cardClass}}">
+      <div class="card-body">
+          {{request}}<br>
+          Notes:
+            {{request.note}}
+      </div>
+    </div>
     {% empty %}
       No sent requests
     {% endfor %}
