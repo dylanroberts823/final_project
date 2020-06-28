@@ -6,7 +6,7 @@
     <div class="{{project.status.cardClass.cardClass}}">
       <div class="card-body">
           {{project.name}}
-        <a href="#" class="float-right btn btn-primary">More</a>
+        <a href="{% url 'projects:manage_project' project.id %}" class="float-right btn btn-primary">More</a>
       </div>
     </div>
   {% endfor %}

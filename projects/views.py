@@ -46,4 +46,29 @@ def create_view(request):
 def manage_view(request):
     if not request.user.is_authenticated:
         return render(request, "users/login.html", {"message": None})
-    return render(request, "projects/manage.html")
+    context = {
+        "managed_projects": request.user.manager.all(),
+        "contributed_projects": request.user.contributor.all()
+    }
+    return render(request, "projects/manage.html", context)
+
+def manage_project_view(request, project_id):
+    if not request.user.is_authenticated:
+        return render(request, "users/login.html", {"message": None})
+    #Get the project in question
+    project = Project.objects.get(pk = project_id)
+
+    #Check whether the user is the contributor, the manager, or viewer
+    #Return the appropriate html page
+    if project.manager == request.user:
+        role = "manager"
+    elif project.contributors.filter(id = request.user.id).count() != 0:
+        role = "contributor"
+    else:
+        role = "viewer"
+    #Establish the context
+    context = {
+        "project": project,
+        "role": role
+    }
+    return render(request, "projects/project.html", context)

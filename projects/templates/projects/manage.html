@@ -1,5 +1,23 @@
 {% extends "projects/base.html" %}
 
 {% block body %}
-  <h1>Manage</h1>
+  <h1>MyProjects</h1>
+  <h2>Managing</h2>
+  {% for project in managed_projects %}
+  <div class="{{project.status.cardClass.cardClass}}">
+    <div class="card-body">
+        {{project.name}}
+      <a href="#" class="float-right btn btn-primary">More</a>
+    </div>
+  </div>
+  {% endfor %}
+  <h2>Contributing</h2>
+  {% for project in contributed_projects %}
+  <div class="{{project.status.cardClass.cardClass}}">
+    <div class="card-body">
+        {{project.name}}
+      <a href="{% url 'projects:manage_project' project.id %}" class="float-right btn btn-primary">More</a>
+    </div>
+  </div>
+  {% endfor %}
 {% endblock %}
