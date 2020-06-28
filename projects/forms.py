@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django.forms import forms
-from users.models import Project, Tag
+from users.models import Project, Tag, Request
 
 class SearchForm(ModelForm):
 
@@ -12,3 +12,8 @@ class CreateProjectForm(ModelForm):
     class Meta:
         model = Project
         fields = ['name', 'description', 'status', 'contributors', 'tags']
+
+class CreateRequestForm(ModelForm):
+    class Meta:
+        model = Request
+        fields = ['note']

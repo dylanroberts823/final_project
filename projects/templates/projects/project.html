@@ -7,7 +7,9 @@
       Description: {{project.description}} <br>
       Tags: {% for tag in project.tags.all %}{{tag}}{% endfor %}<br>
       Role: {{role}}
-    <a href="#" class="float-right btn btn-primary">More</a>
+      {% if role == "Viewer" %}
+        <a href="{% url 'projects:request' project.id %}" class="float-right btn btn-primary">Get Involved</a>
+      {% endif %}
   </div>
 </div>
 {% endblock %}

@@ -3,8 +3,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from users.models import Project, Tag
-from .forms import CreateProjectForm, SearchForm
+from users.models import Project, Tag, Request
+from .forms import CreateProjectForm, SearchForm, CreateRequestForm
 
 # Create your views here.
 def home_view(request):
@@ -131,3 +131,29 @@ def modify_project_view(request, project_id):
 
     #Redirect to manage
     return redirect('projects:manage')
+
+def request_view(request, project_id):
+    if request.method == "POST":
+        #Get the information from the form
+        form = CreateRequestForm(request.POST)
+        #Check whether it's valid
+        if form.is_valid():
+            note = form.cleaned_data['note']
+
+            #Create the new Request
+            Request.objects.create(sender = request.user, project = Project.objects.get(pk=project_id), note = note)
+
+        return redirect('projects:myrequests')
+    else:
+        project = Project.objects.get(pk = project_id)
+        form = CreateRequestForm()
+        context = {
+            "project": project,
+            "form": form
+        }
+        return render(request, "projects/request.html", context)
+
+def myrequests_view(request):
+    context = {
+    }
+    return render(request, "projects/myrequests.html", context)

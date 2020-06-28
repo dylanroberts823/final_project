@@ -22,11 +22,12 @@ class Tag(models.Model):
     def __str__(self):
         return f"{self.tag}"
 
+
 #Will have to decide how to limit many to many
 # Create your models here.
 class Project(models.Model):
     name = models.CharField(max_length=64)
-    manager = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='manager')
+    manager = models.ForeignKey(User, on_delete=models.PROTECT, related_name='manager')
     status = models.ForeignKey('Status', on_delete=models.PROTECT,)
     contributors = models.ManyToManyField(User, related_name='contributor', blank=True,)
     description = models.TextField()
@@ -34,3 +35,21 @@ class Project(models.Model):
 
     def __str__(self):
         return f"{self.name} by {self.manager}"
+
+class Request(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='project')
+
+    PENDING = 'PD'
+    APPROVED = 'AP'
+    DENIED = 'DN'
+    STATUS_CHOICES = [
+        (PENDING, 'Pending'),
+        (APPROVED, 'Approved'),
+        (DENIED, 'Denied')
+    ]
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=PENDING, )
+    note = models.TextField(max_length = 300)
+
+    def __str__(self):
+        return f"{self.sender}'s request for {self.project}: {self.status}"

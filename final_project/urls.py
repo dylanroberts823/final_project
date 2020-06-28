@@ -16,12 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from users.models import Project, Status, CardClass, Tag
+from users.models import Project, Status, CardClass, Tag, Request
 
 admin.site.register(Project)
 admin.site.register(Status)
 admin.site.register(CardClass)
 admin.site.register(Tag)
+admin.site.register(Request)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
