@@ -7,8 +7,8 @@
       <div class="card-body">
           {{request}}<br>
           Notes:{{request.note}}
-          <a href="{% url 'projects:deny' request.id %}" class="float-right btn btn-primary">Deny</a>
-          <a href="{% url 'projects:approve' request.id %}" class="float-right btn btn-primary">Approve</a>
+          <button class="float-right btn btn-primary modify" data-modify="denied" data-request_id={{request.id}}>Deny</button>
+          <button class="float-right btn btn-primary modify" data-modify="approved" data-request_id={{request.id}}>Approve</button>
       </div>
     </div>
     {% empty %}
@@ -26,4 +26,27 @@
     {% empty %}
       No sent requests
     {% endfor %}
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+
+        //Get an alert when a button is clicked, and pass on that data
+        document.querySelectorAll('.modify').forEach(function(button) {
+          button.onclick = function() {
+            //Prompt the user for a note
+            var note = prompt("Notes to sender:", 'Sorry, our team is currently full');
+
+            //Fill in the appropriate variables
+            let modification = button.dataset.modify;
+            let request_id = button.dataset.request_id;
+            console.log(request_id)
+
+            //Send that information to the appropriate link
+            location.href = "{% url 'projects:request_modification' %}"
+
+
+          };
+        });
+
+      });
+    </script>
 {% endblock %}

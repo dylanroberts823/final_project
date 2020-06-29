@@ -186,3 +186,16 @@ def deny_view(request, request_id):
         return redirect('projects:myrequests')
     else:
         raise Http401("You need to be a manager to modify the status of a request")
+
+def request_modification_view(request):
+    #Move into a try statement
+    #received_request = Request.objects.get(pk = request_id)
+    #
+    # #If they are a manager, modify the request accordingly
+    # if received_request.project.manager == request.user:
+    #     received_request.status = RequestStatus.objects.get(status = modification)
+    #     received_request.note = note
+    #     received_request.save()
+    #     return redirect('projects:myrequests')
+    # else:
+    raise Http401("You need to be a manager to modify the status of a request")
