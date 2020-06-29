@@ -2,7 +2,7 @@
 
 {% block body %}
   <h1>Create</h1>
-  <form action="{% url 'projects:create' %}" method="post">
+  <form action="{% url 'projects:create' %}" method="post" onsubmit="return formConfirmation()">
     {% csrf_token %}
     {% for field in form %}
       <p>
@@ -14,6 +14,14 @@
         {% endfor %}
       </p>
     {% endfor %}
-    <input type="submit" value="Submit"></input>
+    <input type="submit" class = "btn btn-info" value="Submit"></input>
   </form>
+  <button class="btn btn-danger" onclick="history.back()">Cancel</button>
+
+  <script>
+    function formConfirmation() {
+      var conf = confirm('Please confirm the following information. Projects cannot be deleted once made.');
+      return conf;
+    };
+  </script>
 {% endblock %}
