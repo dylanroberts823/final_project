@@ -6,9 +6,11 @@
     <div class="{{request.status.cardClass.cardClass}}">
       <div class="card-body">
           {{request}}<br>
-          Notes:{{request.note}}
-          <a href="{% url 'projects:deny' request.id %}" class="float-right btn btn-primary">Deny</a>
-          <a href="{% url 'projects:approve' request.id %}" class="float-right btn btn-primary">Approve</a>
+          Notes: {{request.note}}
+          {% if request.status.status == "Pending" %}
+            <a class="float-right btn btn-primary modify"  href="{% url 'projects:deny' request.id %}">Deny</a>
+            <a class="float-right btn btn-primary modify"  href="{% url 'projects:approve' request.id %}">Approve</a>
+          {% endif %}
       </div>
     </div>
     {% empty %}

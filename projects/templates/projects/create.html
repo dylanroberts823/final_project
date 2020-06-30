@@ -12,6 +12,9 @@
         {% for error in field.errors %}
           <p style="color: red">{{ error }}</p>
         {% endfor %}
+        {% if field.label == "Tags" %}
+          <a href="{% url 'projects:create_tag'%}" class = "btn btn-success">Create Tag</a>
+        {% endif %}
       </p>
     {% endfor %}
     <input type="submit" class = "btn btn-info" value="Submit"></input>

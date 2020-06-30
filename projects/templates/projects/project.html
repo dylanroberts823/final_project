@@ -1,9 +1,15 @@
 {% extends "projects/base.html" %}
 {% block body %}
+
+{% if message %}
+  <div> {{message}} </div>
+{% endif %}
+
 <div class="{{project.status.cardClass.cardClass}}">
   <div class="card-body">
       <h5 class = "card-title"> {{project.name}}</h5>
       <h6 class="card-subtitle mb-2 text-muted">{{project.status}}</h6>
+      Manager: {{project.manager}} <br>
       Description: {{project.description}} <br>
       Tags: {% for tag in project.tags.all %}{{tag}}{% endfor %}<br>
       Role: {{role}}

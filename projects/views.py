@@ -5,10 +5,19 @@ from django.urls import reverse
 from django.db import connection
 
 from users.models import Project, Tag, Request, RequestStatus
-from .forms import CreateProjectForm, SearchForm, CreateRequestForm
+from .forms import CreateProjectForm, SearchForm, CreateRequestForm, CreateTagForm
 
 # Create your views here.
 def home_view(request):
+    #Determine the base and projects
+    if not request.user.is_authenticated:
+        base = "users/base.html"
+        #One raw sql query for final_project requirements
+        projects = Project.objects.raw("SELECT * FROM users_project")
+    else:
+        user = request.user
+        base = "projects/base.html"
+        projects = Project.objects.exclude(contributors = request.user).exclude(manager = request.user).all()
 
     #Modify the projects to be returned if it's a post request
     if request.method == "POST":
@@ -21,16 +30,6 @@ def home_view(request):
             tag = Tag.objects.get(tag = tag)
             projects = Project.objects.filter(tags = tag.id)
 
-    #Determine the base and projects
-    if not request.user.is_authenticated:
-        base = "users/base.html"
-        #One raw sql query for final_project requirements
-        projects = Project.objects.raw("SELECT * FROM users_project")
-    else:
-        user = request.user
-        base = "projects/base.html"
-        projects = Project.objects.exclude(contributors = request.user).exclude(manager = request.user).all()
-
     #Render the page with the appropriate context
     context = {
         "projects": projects,
@@ -38,6 +37,31 @@ def home_view(request):
         "form": SearchForm()
     }
     return render(request, "projects/home.html", context)
+
+def create_tag_view(request):
+    if not request.user.is_authenticated:
+        return render(request, "users/login.html", {"message": None})
+    if request.method == 'POST':
+        #Create a form instance and populate it with data from the request:
+        form = CreateTagForm(request.POST)
+        #Check whether it's valid
+        if form.is_valid():
+            #Get the form data
+            tag = form.cleaned_data['tag']
+
+            #Create the tag
+            tag = Tag.objects.create(tag = tag)
+
+            #Redirect to previous page
+            next = request.POST.get('next', '/')
+            return redirect(next)
+    #Since it's a get request, render the page with the form
+    else:
+        context = {
+            "form": CreateTagForm(),
+            "next": request.META['HTTP_REFERER']
+        }
+        return render(request, "projects/create_tag.html", context)
 
 def create_view(request):
     if not request.user.is_authenticated:
@@ -149,7 +173,13 @@ def request_view(request, project_id):
 
         return redirect('projects:myrequests')
     else:
+        #If the user isn't signed in, redirect them to the signin page
+        if not request.user.is_authenticated:
+            return render(request, "users/login.html", {"next":request.path})
+        #If the user is signed in but is already a member of the team, redirect them to the project page
         project = Project.objects.get(pk = project_id)
+        if project.manager == request.user or request.user.contributor.filter(id=project.id).exists():
+            return redirect(reverse('projects:manage_project', args=(project_id,)))
         form = CreateRequestForm()
         context = {
             "project": project,
@@ -186,6 +216,19 @@ def deny_view(request, request_id):
     received_request = Request.objects.get(pk = request_id)
     if received_request.project.manager == request.user:
         received_request.status = RequestStatus.objects.get(status = 'Denied')
+        received_request.save()
+        return redirect('projects:myrequests')
+    else:
+        raise Http401("You need to be a manager to modify the status of a request")
+
+def request_modification_view(request, request_id, modification_id):
+    #Move into a try statement
+    received_request = Request.objects.get(pk = request_id)
+
+    #If they are a manager, modify the request accordingly
+    if received_request.project.manager == request.user:
+        received_request.status = modification_id
+        #received_request.note = note
         received_request.save()
         return redirect('projects:myrequests')
     else:

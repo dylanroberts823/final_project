@@ -3,7 +3,6 @@ from django.forms import forms
 from users.models import Project, Tag, Request
 
 class SearchForm(ModelForm):
-
     class Meta:
         model = Tag
         fields = ['tag']
@@ -17,3 +16,8 @@ class CreateRequestForm(ModelForm):
     class Meta:
         model = Request
         fields = ['note']
+
+class CreateTagForm(ModelForm):
+    class Meta:
+        model = Tag
+        fields = ['tag']

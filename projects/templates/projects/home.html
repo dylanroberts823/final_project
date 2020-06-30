@@ -31,6 +31,11 @@
               height: 100%;
               line-height: 100%;
           }
+          85% {
+            opacity: 0;
+            height: 0px;
+            line-height: 0px;
+          }
           100% {
             opacity: 0;
             height: 0px;
@@ -50,8 +55,8 @@
     const element = event.target;
     if (element.classList.contains('hide')) {
       element.parentElement.parentElement.style.animationPlayState = 'running';
-      element.parentElement.addEventListener('animationend', () => {
-        element.parentElement.remove();
+      element.parentElement.parentElement.addEventListener('animationend', () => {
+        element.parentElement.parentElement.remove();
       });
     };
   });
