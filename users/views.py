@@ -12,17 +12,20 @@ def index(request):
     return redirect('projects:home')
 
 def login_view(request):
+    next = request.META['HTTP_REFERER']
     if request.method == 'POST':
         username = request.POST["username"]
         password = request.POST["password"]
+        next = request.POST.get('next', '/')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('projects:home')
+            return HttpResponseRedirect(next)
         else:
             return render(request, "users/login.html", {"message": "Invalid credentials."})
     else:
-        return render(request, "users/login.html")
+        next = request.META['HTTP_REFERER']
+        return render(request, "users/login.html", {'next': next})
 
 def logout_view(request):
     logout(request)
