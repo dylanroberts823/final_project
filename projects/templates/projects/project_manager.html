@@ -1,4 +1,4 @@
-{% extends "projects/base.html" %}
+{% extends base %}
 {% block body %}
 <form action = "{% url 'projects:modify_project' project.id %}" method="post">
   {% csrf_token %}

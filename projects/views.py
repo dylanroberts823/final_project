@@ -103,6 +103,11 @@ def manage_project_view(request, project_id):
     #Get the project in question
     project = Project.objects.get(pk = project_id)
 
+    #Set the appropriate base
+    if not request.user.is_authenticated:
+        base = "users/base.html"
+    else:
+        base ="projects/base.html"
     #Check whether the user is the contributor, the manager, or viewer
     #Return the appropriate html page
     if project.manager == request.user:
@@ -116,7 +121,8 @@ def manage_project_view(request, project_id):
 
         #Create the context
         context = {'form': form,
-                   'project': project}
+                   'project': project,
+                   'base': base}
         return render(request, "projects/project_manager.html", context)
 
     elif project.contributors.filter(id = request.user.id).count() != 0:
@@ -126,7 +132,8 @@ def manage_project_view(request, project_id):
     #Establish the context
     context = {
         "project": project,
-        "role": role
+        "role": role,
+        'base': base
     }
     return render(request, "projects/project.html", context)
 
