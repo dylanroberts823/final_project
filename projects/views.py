@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.db import connection
 
 from users.models import Project, Tag, Request, RequestStatus
 from .forms import CreateProjectForm, SearchForm, CreateRequestForm
@@ -23,7 +24,8 @@ def home_view(request):
     #Determine the base and projects
     if not request.user.is_authenticated:
         base = "users/base.html"
-        projects = Project.objects.all()
+        #One raw sql query for final_project requirements
+        projects = Project.objects.raw("SELECT * FROM users_project")
     else:
         user = request.user
         base = "projects/base.html"
@@ -141,7 +143,9 @@ def request_view(request, project_id):
             note = form.cleaned_data['note']
 
             #Create the new Request
-            Request.objects.create(sender = request.user, project = Project.objects.get(pk=project_id), note = note)
+            #Second required SQL code
+            cursor = connection.cursor()
+            cursor.execute("INSERT INTO users_request (sender_id, project_id, status_id, note) VALUES (%s, %s, %s, %s)", [request.user.id, project_id, 3, note])
 
         return redirect('projects:myrequests')
     else:
